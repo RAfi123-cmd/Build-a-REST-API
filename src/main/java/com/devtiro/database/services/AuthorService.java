@@ -9,6 +9,4 @@ public interface AuthorService {
     AuthorEntity save(AuthorEntity authorEntity);
 
     List<AuthorEntity> findAll();
-
-    void createAuthor(AuthorEntity testAuthorEntityA);
 }

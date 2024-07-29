@@ -1,5 +1,9 @@
 package com.devtiro.database.services.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.stereotype.Service;
 
 import com.devtiro.database.domain.entities.BookEntity;
@@ -19,6 +23,15 @@ public class BookServiceImpl implements BookService {
     public BookEntity createBook(String isbn, BookEntity book) {
         book.setIsbn(isbn);
         return bookRepository.save(book);
+    }
+
+    @Override
+    public List<BookEntity> findAll() {
+        return StreamSupport
+                .stream(bookRepository
+                        .findAll()
+                        .spliterator(), false)
+                .collect(Collectors.toList());
     }
 
 }

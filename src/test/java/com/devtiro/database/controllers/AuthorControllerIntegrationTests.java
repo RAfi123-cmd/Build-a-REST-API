@@ -72,7 +72,7 @@ public class AuthorControllerIntegrationTests {
         @Test
         public void testThatListAuthorsReturnsListOfAuthors() throws Exception {
                 AuthorEntity testAuthorEntityA = TestDataUtil.createTestAuthorEntityA();
-                authorService.createAuthor(testAuthorEntityA);
+                authorService.save(testAuthorEntityA);
                 mockMvc.perform(MockMvcRequestBuilders.get("/authors")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(

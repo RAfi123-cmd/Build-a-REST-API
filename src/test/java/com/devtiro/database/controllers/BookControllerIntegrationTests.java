@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.devtiro.database.TestDataUtil;
 import com.devtiro.database.domain.dto.BookDto;
+import com.devtiro.database.domain.entities.BookEntity;
+import com.devtiro.database.services.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -25,8 +27,11 @@ public class BookControllerIntegrationTests {
 
     private ObjectMapper objectMapper;
 
-    public BookControllerIntegrationTests(MockMvc mockMvc) {
+    private BookService bookService;
+
+    public BookControllerIntegrationTests(MockMvc mockMvc, BookService bookService) {
         this.mockMvc = mockMvc;
+        this.bookService = bookService;
         this.objectMapper = new ObjectMapper();
     }
 
@@ -52,5 +57,24 @@ public class BookControllerIntegrationTests {
                         MockMvcResultMatchers.jsonPath("$.isbn").value(bookDto.getIsbn()))
                 .andExpect(
                         MockMvcResultMatchers.jsonPath("$.title").value(bookDto.getTitle()));
+    }
+
+    @Test
+    public void testThatListBooksReturnsHttpStatus200Ok() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/books")
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(
+                        MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void testThatListBooksReturnsBook() throws Exception {
+        BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
+        bookService.createBook(testBookEntityA.getIsbn(), testBookEntityA);
+        mockMvc.perform(MockMvcRequestBuilders.get("/books")
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(
+                        MockMvcResultMatchers.jsonPath("$[0].isbn").value("978-1-2345-6789-0"))
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$[0].title").value("The Shadow in the Attic"));
     }
 }
